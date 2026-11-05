@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fantastic Jobs</title>
+  <meta name="description" content="Access millions of AI-enriched jobs in hours, not days.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="hero-pixel.css">
+</head>
+<body>
+  <canvas class="field" data-field aria-hidden="true"></canvas>
+
+  <div class="page">
+    <header class="nav">
+      <a class="nav__logo" href="https://fantastic.jobs/" aria-label="Fantastic.jobs home">
+        <img src="assets/logos/fantastic-logo-dark.png" alt="" width="171" height="30">
+      </a>
+      <nav class="nav__links" aria-label="Main">
+        <a href="https://fantastic.jobs/api">Use Cases <img src="assets/icon-nav-plus.svg" alt="" width="10" height="10"></a>
+        <a href="https://fantastic.jobs/api">Jobs API</a>
+        <a href="https://fantastic.jobs/api#pricing">Pricing</a>
+        <a href="https://developer.fantastic.jobs/documentation/supported-ats-sources">ATS Platforms <img src="assets/icon-nav-plus.svg" alt="" width="10" height="10"></a>
+      </nav>
+      <div class="nav__actions">
+        <a class="sharp sharp--ghost" href="https://fantastic.jobs/api">Log In</a>
+        <a class="sharp sharp--solid" href="https://fantastic.jobs/api#pricing"><span class="sharp__tile"><img src="assets/logos/fantastic-symbol.png" alt="" width="20" height="20"></span>Get API key</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <a class="rating" href="https://fantastic.jobs/api#pricing">
+          <span class="rating__stars" role="img" aria-label="Rated 5 stars">★★★★★</span>
+          4.9/5 on Apify
+        </a>
+        <h1 class="headline" data-headline>
+          <span class="headline__line"><span data-px>Access millions of</span> <span class="headline__word" data-px>AI-enriched</span></span>
+          <span class="headline__line"><span data-px>jobs in</span> <span class="headline__box" data-px>hours, not days</span></span>
+        </h1>
+        <p class="intro__body">Pull fresh jobs from 200,000+ company career sites into your product with one API call. Every job comes back as JSON, with salary, skills and more extracted by AI.</p>
+        <div class="ctas">
+          <a class="sharp sharp--solid sharp--large" href="https://fantastic.jobs/api#pricing"><span class="sharp__tile"><img src="assets/logos/fantastic-symbol.png" alt="" width="24" height="24"></span>Get API key</a>
+          <a class="sharp sharp--ghost sharp--large" href="https://developer.fantastic.jobs/documentation/how-fantastic-jobs-api-works" target="_blank" rel="noopener noreferrer">Explore docs</a>
+        </div>
+      </section>
+
+      <section class="machine" data-machine>
+        <div class="machine__frame" data-visual role="img" aria-label="Job postings moving left to right in four lanes. Each starts as raw markup from a career site, becomes structured JSON with AI-added fields inside the Fantastic.jobs API zone, and leaves as a finished listing in your product.">
+          <span class="machine__zone" aria-hidden="true"></span>
+          <div class="machine__heads" aria-hidden="true">
+            <p>Raw postings</p>
+            <p class="is-accent">AI-enriched API</p>
+            <p>Your product</p>
+          </div>
+          <div class="machine__lanes" data-track aria-hidden="true"></div>
+          <canvas class="machine__sparks" data-sparks aria-hidden="true"></canvas>
+        </div>
+      </section>
+
+      <section class="logos" aria-labelledby="logos-heading">
+        <h2 class="visually-hidden" id="logos-heading">Trusted by</h2>
+        <ul>
+          <li><a href="https://www.tealhq.com/job-search" target="_blank" rel="noopener noreferrer"><img src="assets/logos/teal.png" alt="Teal" height="28"></a></li>
+          <li><a class="is-dim" href="https://jackandjill.ai/" target="_blank" rel="noopener noreferrer"><img src="assets/logos/jack-and-jill.png" alt="Jack &amp; Jill" height="20"></a></li>
+          <li><a href="https://www.rezi.ai/job-search" target="_blank" rel="noopener noreferrer"><img src="assets/logos/rezi.png" alt="Rezi AI" height="28"></a></li>
+          <li><a class="is-dim" href="https://esai.ai" target="_blank" rel="noopener noreferrer"><img src="assets/logos/esai.png" alt="ESAI" height="34"></a></li>
+          <li><a href="https://remoterocketship.com/" target="_blank" rel="noopener noreferrer"><img src="assets/logos/remote-rocketship.png" alt="Remote Rocketship" height="22"></a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script src="jobs-data.js"></script>
+  <script src="hero-pixel.js"></script>
+</body>
+</html>

@@ -1,0 +1,652 @@
+/*
+  Pixel hero: tiny squares flashing across the page, bracket labels and pixel-cut type,
+  with the logo's indigo-to-pink stepped into blocks. Colours come from the Fantastic.jobs library in Figma. To try another
+  purple, change --field; everything on it is ebony, and the middle zone is ebony too.
+  Roobert renders only where it's installed (see hero-stream.css); everyone else gets
+  Instrument Sans. The pixelated letters are drawn from whichever font is in use.
+*/
+:root {
+  --font: "Roobert", "Instrument Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --royal-blue: #4f46e5;
+  --governor-bay: #4338ca;
+  --cornflower: #818cf8;
+  --melrose: #a5b4fc;
+  --zircon: #eef2ff;
+  --ebony: #111827;
+  --black-pearl: #030712;
+  --pale-sky: #6b7280;
+  --athens: #e5e7eb;
+  --field: var(--cornflower);
+  --ink: var(--ebony);
+  --gutter: 32px;
+  --card-w: 356px;
+  --card-h: 60px;
+  --lane-h: 84px;
+  --head-h: 52px;
+  --lanes: 4;
+  --gate-portion: 0.3333;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Tiny squares flashing in and out across the whole page; drawn in hero-pixel.js. */
+.field {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, 100% - var(--gutter) * 2);
+  margin: 0 auto;
+}
+
+/* Sharp buttons: square corners and a mono label. The primary carries the logo symbol in an inset tile. */
+.sharp {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--ink);
+  background: var(--field);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.sharp--large {
+  height: 56px;
+  padding: 0 24px;
+  font-size: 14px;
+}
+
+.sharp--solid {
+  gap: 12px;
+  padding: 0 16px 0 3px;
+  background: var(--ink);
+  color: #fff;
+}
+
+.sharp--solid.sharp--large {
+  gap: 16px;
+  padding: 0 24px 0 3px;
+}
+
+.sharp__tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sharp--large .sharp__tile {
+  width: 48px;
+  height: 48px;
+}
+
+.sharp__tile img {
+  display: block;
+}
+
+.sharp--solid:hover {
+  background: var(--governor-bay);
+  border-color: var(--governor-bay);
+}
+
+.sharp--ghost:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 108px;
+}
+
+.nav__logo img {
+  display: block;
+  width: 171px;
+  height: 30px;
+}
+
+.nav__links {
+  display: flex;
+  gap: 32px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.nav__links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.nav__links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.nav__links img {
+  filter: brightness(0);
+}
+
+.nav__actions {
+  display: flex;
+  flex: none;
+  gap: 12px;
+}
+
+/* Intro */
+.intro {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 44px 0 56px;
+  text-align: center;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  margin-bottom: 20px;
+  padding: 0 12px;
+  border: 1px solid var(--ink);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.rating__stars {
+  color: #ff9500;
+}
+
+.headline {
+  margin: 0;
+  font-size: clamp(36px, 5.6vw, 70px);
+  font-weight: 500;
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+}
+
+.headline__line {
+  display: block;
+}
+
+.headline__word {
+  white-space: nowrap;
+}
+
+/* The logo's gradient, stepped into blocks like everything else that's pixel here. */
+.headline__box {
+  display: inline-block;
+  padding: 0 0.16em 0.06em;
+  background: linear-gradient(90deg,
+    #4f46e5 0 12.5%, #6a41d6 12.5% 25%, #8439c4 25% 37.5%, #9c33b2 37.5% 50%,
+    #b02ea0 50% 62.5%, #c12a8f 62.5% 75%, #cf287f 75% 87.5%, #db2777 87.5% 100%);
+  white-space: nowrap;
+  color: #fff;
+}
+
+/* A letter redrawn on a coarse grid. The real text stays underneath for selection and screen readers. */
+.px {
+  position: relative;
+}
+
+.px.is-on {
+  color: transparent;
+}
+
+.px canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  pointer-events: none;
+}
+
+.px.is-on canvas {
+  display: block;
+}
+
+.intro__body {
+  max-width: 640px;
+  margin: 20px 0 26px;
+  font-size: 17px;
+  line-height: 26px;
+  text-wrap: balance;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* The machine */
+.machine {
+  position: relative;
+}
+
+.machine__frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+  background: var(--field);
+}
+
+/* The middle zone is Fantastic.jobs: the one place on the page that inverts. */
+.machine__zone {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  bottom: 0;
+  left: var(--gate-ai, 33.33%);
+  width: calc(var(--gate-api, 66.67%) - var(--gate-ai, 33.33%));
+  background: var(--ink);
+}
+
+.machine__heads {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: var(--gate-ai, 33.33%) 1fr var(--gate-ai, 33.33%);
+  height: var(--head-h);
+  border-bottom: 1px dotted var(--ink);
+  justify-items: center;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.machine__heads p {
+  margin: 0;
+}
+
+.machine__heads p::before {
+  content: "[ ";
+}
+
+.machine__heads p::after {
+  content: " ]";
+}
+
+.machine__heads .is-accent {
+  color: var(--melrose);
+}
+
+.machine__lanes {
+  position: relative;
+  z-index: 1;
+  height: calc(var(--lane-h) * var(--lanes));
+}
+
+/* A lane: a rule through the middle, a dotted line beneath. The rule flips colour in the dark zone. */
+.lane {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: var(--lane-h);
+  background:
+    linear-gradient(90deg, var(--ink) 0 var(--gate-ai), var(--melrose) var(--gate-ai) var(--gate-api), var(--ink) var(--gate-api)) 0 50% / 100% 1px no-repeat;
+}
+
+.lane::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background-image: repeating-linear-gradient(90deg, var(--dot, var(--ink)) 0 1px, transparent 1px 5px);
+  -webkit-mask-image: linear-gradient(90deg, #000 0 var(--gate-ai), rgba(0, 0, 0, 0) var(--gate-ai) var(--gate-api), #000 var(--gate-api));
+  mask-image: linear-gradient(90deg, #000 0 var(--gate-ai), rgba(0, 0, 0, 0) var(--gate-ai) var(--gate-api), #000 var(--gate-api));
+}
+
+.lane:last-child::after {
+  display: none;
+}
+
+.machine__sparks {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* One card crossing the machine. It changes what it's made of at each gate. */
+.card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--card-w);
+  height: var(--card-h);
+  will-change: transform;
+}
+
+.card__raw,
+.card__code,
+.card__listing {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1px solid;
+}
+
+/* Stage 1: outline on the field, markup and block noise */
+.card__raw {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 12px;
+  border-color: var(--ink);
+  background: var(--field);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-variant-ligatures: none;
+  line-height: 19px;
+  white-space: pre;
+  color: var(--ink);
+}
+
+.card__raw span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Stage 2: inverted, the JSON */
+.card__code {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 12px;
+  border-color: var(--melrose);
+  background: var(--black-pearl);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 19px;
+  white-space: pre;
+  color: #fff;
+}
+
+.card__code span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__code i {
+  font-style: normal;
+  color: var(--melrose);
+}
+
+/* Stage 3: a white listing */
+.card__listing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border-color: var(--ink);
+  background: #fff;
+}
+
+.card__logo {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--athens);
+  object-fit: cover;
+}
+
+.card__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.card__title,
+.card__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.card__meta {
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--pale-sky);
+}
+
+.card__meta b {
+  font-weight: 500;
+  color: var(--governor-bay);
+}
+
+/* Trusted by: same behaviour as hero-stream */
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.logos {
+  padding: 44px 0 48px;
+}
+
+.logos ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px 48px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logos a {
+  position: relative;
+  display: block;
+}
+
+.logos img {
+  display: block;
+  width: auto;
+  filter: grayscale(1) brightness(0);
+  transition: opacity 200ms ease;
+}
+
+/* The plus marks a logo as a link. It sits just off the top-right corner. */
+.logos a::after {
+  content: "+";
+  position: absolute;
+  top: -12px;
+  right: -16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--ink);
+  transition: opacity 200ms ease;
+}
+
+.logos a.is-dim img {
+  opacity: 0.22;
+}
+
+.logos a.is-dim::after {
+  opacity: 0;
+}
+
+/* Whichever logo you point at lights up, and the rest step back. */
+.logos ul:has(a:hover, a:focus-visible) a:not(:hover, :focus-visible) img {
+  opacity: 0.22;
+}
+
+.logos ul:has(a:hover, a:focus-visible) a:not(:hover, :focus-visible)::after {
+  opacity: 0;
+}
+
+.logos a:hover img,
+.logos a:focus-visible img {
+  opacity: 1;
+}
+
+.logos a:hover::after,
+.logos a:focus-visible::after {
+  opacity: 1;
+}
+
+@media (max-width: 1100px) {
+  .nav__links {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --gutter: 16px;
+    --card-w: min(300px, 78vw);
+    --lanes: 3;
+    --gate-portion: 0.26;
+  }
+
+  .nav {
+    height: 72px;
+  }
+
+  .nav__logo img {
+    width: 125px;
+    height: 22px;
+  }
+
+  .nav .sharp {
+    height: 38px;
+  }
+
+  .nav .sharp--solid {
+    gap: 10px;
+    padding-right: 12px;
+  }
+
+  .nav .sharp__tile {
+    width: 30px;
+    height: 30px;
+  }
+
+  .nav .sharp__tile img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .intro {
+    padding: 28px 0 44px;
+  }
+
+
+  .machine__heads {
+    font-size: 9px;
+    letter-spacing: 0.02em;
+  }
+
+  .machine__heads p::before,
+  .machine__heads p::after {
+    content: none;
+  }
+
+  .machine__heads p {
+    overflow: hidden;
+    max-width: 100%;
+    padding: 0 2px;
+    text-overflow: ellipsis;
+  }
+
+  .sharp--large {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .sharp--solid.sharp--large {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 440px) {
+  .nav__actions .sharp--ghost {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sharp,
+  .logos img,
+  .logos a::after {
+    transition: none;
+  }
+}

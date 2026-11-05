@@ -1,0 +1,741 @@
+/*
+  Blueprint hero: the page itself is the circuit board. The routing is drawn in
+  hero-blueprint.js from the live layout, so it always lands on the cards.
+
+  --board is a very dark violet that isn't in the Figma library yet. Everything else comes
+  from the library, with the logo's indigo-to-pink as the only accent. No glows anywhere.
+  Roobert renders only where it's installed (see hero-stream.css); everyone else gets
+  Instrument Sans.
+*/
+:root {
+  --font: "Roobert", "Instrument Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --royal-blue: #4f46e5;
+  --governor-bay: #4338ca;
+  --cornflower: #818cf8;
+  --melrose: #a5b4fc;
+  --zircon: #eef2ff;
+  --ebony: #111827;
+  --pale-sky: #6b7280;
+  --ghost: #9ca3af;
+  --athens: #e5e7eb;
+  --pink: #db2777;
+  --soft-pink: #f472b6;
+  --board: #170a36;
+  --trace: rgba(205, 190, 255, 0.24);
+  --trace-strong: rgba(196, 190, 255, 0.42);
+  --bevel: 14px;
+  --module-h: 300px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--board);
+  color: #fff;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav,
+main {
+  position: relative;
+  z-index: 1;
+}
+
+/* The board */
+.circuit {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  pointer-events: none;
+}
+
+.circuit__traces {
+  stroke: var(--trace);
+  stroke-width: 1;
+  stroke-linejoin: miter;
+}
+
+.circuit__outline {
+  stroke: var(--trace-strong);
+  stroke-width: 1;
+  transition: stroke 300ms ease;
+}
+
+.circuit__outline.is-working {
+  stroke: var(--pink);
+}
+
+.circuit__via {
+  fill: var(--board);
+  stroke: var(--trace-strong);
+  stroke-width: 1;
+}
+
+.circuit__body {
+  fill: var(--board);
+  stroke: var(--trace-strong);
+  stroke-width: 1;
+}
+
+.circuit__dot {
+  fill: var(--trace-strong);
+  stroke: none;
+}
+
+.circuit__pulse {
+  stroke: var(--pink);
+  stroke-width: 1.5;
+  stroke-dasharray: 36 964;
+  animation: signal 5s linear infinite;
+}
+
+@keyframes signal {
+  from { stroke-dashoffset: 36; }
+  to { stroke-dashoffset: -964; }
+}
+
+.trace-lit {
+  stroke: var(--pink);
+  stroke-width: 1.5;
+}
+
+.packet {
+  fill: #fff;
+  stroke: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.packet-plate {
+  fill: var(--board);
+  stroke: var(--trace-strong);
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: min(1280px, 100% - 48px);
+  height: 72px;
+  margin: 0 auto;
+}
+
+.nav__left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+/* The wordmark in white, with the logo's own colours kept on the mark. */
+.nav__logo {
+  position: relative;
+  display: block;
+  flex: none;
+}
+
+.nav__logo img {
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.nav__logo .nav__mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  filter: none;
+  clip-path: inset(0 84% 0 0);
+}
+
+.nav__links {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.nav__links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.nav__links a:hover {
+  color: var(--melrose);
+}
+
+.nav__links img {
+  filter: brightness(0) invert(1);
+}
+
+.nav__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav__login {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.nav__login:hover {
+  color: var(--melrose);
+}
+
+/* Intro */
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(1000px, 100% - 48px);
+  margin: 0 auto;
+  padding-top: 36px;
+  text-align: center;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 6px 14px;
+  border: 1px solid var(--trace-strong);
+  border-radius: 999px;
+  background: var(--board);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.rating:hover {
+  border-color: var(--ghost);
+}
+
+.rating__stars {
+  color: #ff9500;
+}
+
+.headline {
+  margin: 0;
+  font-size: clamp(38px, 5.4vw, 72px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.headline em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--cornflower), var(--pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (min-width: 721px) {
+  .headline span {
+    display: block;
+  }
+}
+
+.intro__body {
+  max-width: 720px;
+  margin: 22px 0 0;
+  font-size: 18px;
+  line-height: 29px;
+  color: var(--athens);
+  text-wrap: balance;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.button {
+  padding: 11px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  transition: background-color 150ms ease;
+}
+
+.button--primary {
+  padding: 9.5px 18.5px;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #4f46e5, #db2777 22%, #ffe3ef 53%, #db2777 78%, #4f46e5) border-box;
+  color: var(--ebony);
+}
+
+.button--primary:hover {
+  background:
+    linear-gradient(var(--zircon), var(--zircon)) padding-box,
+    linear-gradient(90deg, #4f46e5, #db2777 22%, #ffe3ef 53%, #db2777 78%, #4f46e5) border-box;
+}
+
+.button--small {
+  padding: 6.5px 14.5px;
+  font-size: 14px;
+}
+
+.button--secondary {
+  padding: 10px 19px;
+  border: 1px solid var(--trace-strong);
+  background: var(--board);
+}
+
+.button--secondary:hover {
+  border-color: var(--ghost);
+}
+
+/* The flow: raw module, chip, product window */
+.flow {
+  display: grid;
+  grid-template-columns: minmax(0, 29fr) minmax(0, 33fr) minmax(0, 38fr);
+  align-items: center;
+  gap: 76px;
+  width: min(1280px, 100% - 64px);
+  margin: 92px auto 0;
+}
+
+/* Both cards are footprints on the board. Their outlines are drawn with the routing,
+   and the translucent fill only quietens what passes behind the text. */
+.module {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: var(--module-h);
+  padding: 36px 18px 10px;
+  background: rgba(23, 10, 54, 0.7);
+  clip-path: polygon(
+    var(--bevel) 0, calc(100% - var(--bevel)) 0, 100% var(--bevel),
+    100% calc(100% - var(--bevel)), calc(100% - var(--bevel)) 100%,
+    var(--bevel) 100%, 0 calc(100% - var(--bevel)), 0 var(--bevel));
+  font-family: var(--font-mono);
+}
+
+.tag {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ghost);
+}
+
+.tag--accent {
+  color: var(--soft-pink);
+}
+
+.module pre {
+  margin: 0;
+  font-family: inherit;
+  font-variant-ligatures: none;
+}
+
+.module .module__markup {
+  flex: none;
+  overflow: hidden;
+  height: 96px;
+  font-size: 11.5px;
+  line-height: 19px;
+  white-space: pre;
+  color: #d1d5db;
+}
+
+.module .module__ascii {
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+  margin-top: 6px;
+  font-size: 11.5px;
+  line-height: 13px;
+  letter-spacing: 0.02em;
+  white-space: pre;
+  color: rgba(196, 190, 255, 0.42);
+}
+
+.chip__die {
+  flex: 1;
+  overflow: hidden;
+  font-size: 11.5px;
+  font-variant-ligatures: none;
+  line-height: 34px;
+  color: var(--pale-sky);
+}
+
+.json-line {
+  overflow: hidden;
+  min-height: 34px;
+  text-overflow: ellipsis;
+  white-space: pre;
+}
+
+.json-line .k {
+  color: var(--ghost);
+}
+
+.json-line .v {
+  color: var(--athens);
+}
+
+.json-line--ai .k {
+  color: var(--soft-pink);
+}
+
+.json-line--ai .v {
+  color: #fff;
+}
+
+/* The product window: the one solid, finished thing on the board */
+.window {
+  position: relative;
+  overflow: hidden;
+  height: var(--module-h);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--ebony);
+}
+
+.window__bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--athens);
+}
+
+.window__bar i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--athens);
+}
+
+.window__bar span {
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #4b5563;
+}
+
+.window__list {
+  position: relative;
+  overflow: hidden;
+  height: calc(100% - 38px);
+}
+
+.row {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 87px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--athens);
+  background: #fff;
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 300ms ease, background-color 700ms ease;
+}
+
+.row__head {
+  display: flex;
+  gap: 11px;
+}
+
+.row__logo {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--athens);
+  border-radius: 9px;
+  object-fit: cover;
+  transition: opacity 250ms steps(4);
+}
+
+.row__text {
+  min-width: 0;
+}
+
+.row__title,
+.row__meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.row__meta {
+  margin-top: 1px;
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--pale-sky);
+}
+
+.row__values {
+  display: flex;
+  gap: 5px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.row__values b {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--zircon);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 17px;
+  white-space: nowrap;
+  color: var(--governor-bay);
+}
+
+/* While a row resolves, it's still made of the ASCII it came from */
+.row.is-decoding {
+  background: var(--zircon);
+}
+
+.row.is-decoding .row__title,
+.row.is-decoding .row__meta,
+.row.is-decoding .row__values b {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--governor-bay);
+}
+
+.row.is-decoding .row__values b {
+  background: #fff;
+}
+
+.row.is-decoding .row__logo {
+  opacity: 0.15;
+}
+
+/* Trusted by: a footprint on the board, one cell per logo. The outline and dividers are
+   drawn with the routing in hero-blueprint.js. */
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.logos {
+  width: min(1280px, 100% - 64px);
+  margin: 72px auto 64px;
+}
+
+.logos ul {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  background: rgba(23, 10, 54, 0.7);
+  clip-path: polygon(
+    var(--bevel) 0, calc(100% - var(--bevel)) 0, 100% var(--bevel),
+    100% calc(100% - var(--bevel)), calc(100% - var(--bevel)) 100%,
+    var(--bevel) 100%, 0 calc(100% - var(--bevel)), 0 var(--bevel));
+  list-style: none;
+}
+
+.logos li {
+  min-width: 0;
+}
+
+.logos a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 112px;
+  padding: 0 24px;
+  transition: background-color 200ms ease;
+}
+
+.logos a:hover,
+.logos a:focus-visible {
+  background: rgba(129, 140, 248, 0.14);
+}
+
+.logos a:focus-visible {
+  outline-offset: -6px;
+}
+
+.logos img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0) invert(1);
+  transition: opacity 200ms ease;
+}
+
+.logos a::after {
+  content: "+";
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--ghost);
+  transition: opacity 200ms ease;
+}
+
+.logos a.is-dim img {
+  opacity: 0.3;
+}
+
+.logos a.is-dim::after {
+  opacity: 0;
+}
+
+.logos ul:has(a:hover, a:focus-visible) a:not(:hover, :focus-visible) img {
+  opacity: 0.3;
+}
+
+.logos ul:has(a:hover, a:focus-visible) a:not(:hover, :focus-visible)::after {
+  opacity: 0;
+}
+
+.logos a:hover img,
+.logos a:focus-visible img {
+  opacity: 1;
+}
+
+.logos a:hover::after,
+.logos a:focus-visible::after {
+  opacity: 1;
+}
+
+@media (max-width: 1120px) {
+  .nav__links {
+    display: none;
+  }
+
+  .flow,
+  .logos {
+    width: calc(100% - 48px);
+  }
+
+  .flow {
+    gap: 44px;
+  }
+}
+
+/* Stacked: the same flow, running downward */
+@media (max-width: 960px) {
+  .flow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 64px;
+    max-width: 520px;
+    margin-top: 56px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav {
+    width: calc(100% - 32px);
+  }
+
+  .intro {
+    width: calc(100% - 32px);
+  }
+
+  .intro__body {
+    font-size: 16px;
+    line-height: 26px;
+  }
+
+  .flow,
+  .logos {
+    width: calc(100% - 32px);
+  }
+
+  .logos {
+    margin-top: 56px;
+  }
+
+  .logos ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .logos li:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .logos a {
+    height: 88px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav__login {
+    display: none;
+  }
+}
