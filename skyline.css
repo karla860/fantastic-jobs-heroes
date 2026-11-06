@@ -1,0 +1,575 @@
+/* Colours are from the Fantastic.jobs library in Figma. */
+:root {
+  --font-display: "Instrument Sans", system-ui, sans-serif;
+  --font-body: Inter, system-ui, sans-serif;
+  --font-nav: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --royal-blue: #4f46e5;
+  --governor-bay: #4338ca;
+  --cornflower: #818cf8;
+  --zircon: #eef2ff;
+  --indigo-mist: #e0e7ff;
+  --ebony: #111827;
+  --black-pearl: #030712;
+  --pale-sky: #6b7280;
+  --ghost: #9ca3af;
+  --athens: #e5e7eb;
+  --ink: #1d1e25;
+  --melrose: #a5b4fc;
+  --pink: #f472b6;
+  --magenta: #d946ef;
+  --neon-label: #c7d2fe;
+  --gutter: 24px;
+  --content: min(1280px, 100% - var(--gutter) * 2);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--black-pearl);
+  color: #fff;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+pre:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Hero: the scene is drawn in skyline.js and anchored to the top of the ground bar. */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: max(900px, 100svh);
+  background: linear-gradient(180deg, #030712 0%, #1e1b6b 36%, #4f46e5 72%, #d946ef 86%, #ef0078 100%);
+}
+
+.hero__canvas,
+.hero__tethers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.hero__tethers path {
+  fill: none;
+  stroke: #fff;
+  stroke-dasharray: 3 3;
+  stroke-opacity: 0.7;
+  transition: stroke-opacity 150ms ease;
+}
+
+.hero__tethers circle {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.hero__tethers .is-active {
+  stroke-opacity: 1;
+}
+
+/* Nav */
+.nav {
+  position: relative;
+  z-index: 2;
+  padding: 8px 0;
+}
+
+.nav__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: var(--content);
+  margin: 0 auto;
+  padding: 8px 8px 8px 12px;
+}
+
+.nav__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav__logo {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+}
+
+.nav__logo img {
+  display: block;
+}
+
+/* The symbol is the left end of the full logo image. */
+.nav__symbol {
+  overflow: hidden;
+  width: 18px;
+  height: 22px;
+}
+
+.nav__divider {
+  width: 0.5px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav__links {
+  display: flex;
+  padding-left: 12px;
+  font-family: var(--font-nav);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #fff;
+}
+
+.nav__links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+.nav__links a:hover {
+  color: var(--melrose);
+}
+
+.nav__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Stage: copy on the left, roles placed over the city on the right */
+.stage {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: var(--content);
+  margin: 0 auto;
+  padding: 40px 0 200px;
+}
+
+/* Keeps the widest role clear of the copy. */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  width: min(640px, 100% - 594px);
+}
+
+.headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 500;
+  line-height: 67px;
+  letter-spacing: -0.02em;
+}
+
+.headline span {
+  display: block;
+}
+
+.lede {
+  margin: 0;
+  font-size: 17px;
+  line-height: 27px;
+  text-wrap: pretty;
+  color: var(--indigo-mist);
+}
+
+.terminal {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(3, 7, 18, 0.86);
+  font-family: var(--font-mono);
+}
+
+.terminal__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px 6px 6px;
+}
+
+.terminal__tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.terminal__tab {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--ghost);
+  cursor: pointer;
+}
+
+.terminal__tab {
+  padding: 3px 10px;
+  border-radius: 5px;
+}
+
+.terminal__tab:hover {
+  color: #fff;
+}
+
+.terminal__tab[aria-selected="true"] {
+  background: var(--royal-blue);
+  color: #fff;
+}
+
+.terminal__code {
+  overflow-x: auto;
+  margin: 0;
+  padding: 8px 16px 12px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 21px;
+  color: var(--athens);
+}
+
+.terminal__code code,
+.terminal__output code {
+  font: inherit;
+}
+
+.terminal__output {
+  overflow-x: auto;
+  margin: 0;
+  padding: 10px 16px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ghost);
+}
+
+/* The fields Fantastic.jobs adds with AI, as on the role cards. */
+.terminal__output b {
+  font-weight: 400;
+  color: var(--pink);
+}
+
+.terminal__prompt {
+  color: var(--cornflower);
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.button {
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+  transition: background-color 150ms ease;
+}
+
+.button--primary {
+  border-color: #fff;
+  background: #fff;
+  color: var(--ebony);
+}
+
+.button--primary:hover {
+  border-color: var(--indigo-mist);
+  background: var(--indigo-mist);
+}
+
+.button--secondary {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.button--secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Roles */
+.roles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.role {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 11px 14px 12px 12px;
+  border: 1px solid var(--athens);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 14px 30px -6px rgba(3, 8, 51, 0.4);
+}
+
+.role--cribl {
+  top: 66px;
+  left: calc(100% - 500px);
+}
+
+.role--relativity {
+  top: 222px;
+  left: calc(100% - 300px);
+}
+
+.role--foji {
+  top: 306px;
+  left: calc(100% - 570px);
+}
+
+.role__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.role__logo {
+  flex: none;
+  display: block;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.role__text {
+  min-width: 0;
+}
+
+.role__title,
+.role__meta {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.role__title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--ebony);
+}
+
+.role__meta {
+  margin-top: 1px;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--pale-sky);
+}
+
+.role__values {
+  display: flex;
+  gap: 4px;
+}
+
+.role__values b {
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--zircon);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13px;
+  white-space: nowrap;
+  color: var(--governor-bay);
+}
+
+/* Ground: the "Logo grid with metrics" bar from Figma. */
+.ground {
+  --rule: #1f2937;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--rule);
+  background: var(--black-pearl);
+}
+
+.ground__grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  width: var(--content);
+  min-height: 111px;
+  margin: 0 auto;
+  box-shadow: 1px 0 var(--rule);
+}
+
+.ground__logos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ground__logos li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 111px;
+  padding: 0 8px;
+  box-shadow: inset 1px 0 var(--rule);
+}
+
+.ground__logos img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.ground__more {
+  font-size: 13px;
+  color: var(--ghost);
+}
+
+.ground__metrics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 16px 24px;
+  background: var(--ebony);
+  box-shadow: inset 1px 0 var(--rule), inset -1px 0 var(--rule);
+}
+
+.ground__metrics div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ground__metrics dt {
+  flex: none;
+  width: 64px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 30px;
+  color: #fff;
+}
+
+.ground__metrics dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 16px;
+  color: var(--ghost);
+}
+
+@media (max-width: 1119px) {
+  .stage {
+    padding: 32px 0 300px;
+  }
+
+  .copy {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .roles {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    margin: 32px auto 0;
+  }
+
+  .role {
+    position: relative;
+    inset: auto;
+  }
+
+  .role__title,
+  .role__meta {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ground__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ground__metrics {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 32px;
+    padding: 16px;
+  }
+
+  .ground__logos li {
+    min-height: 88px;
+  }
+}
+
+@media (max-width: 960px) {
+  .nav__divider,
+  .nav__links {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .headline {
+    font-size: clamp(32px, 10.5vw, 64px);
+    line-height: 1.04;
+  }
+
+  .ground__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav__login {
+    display: none;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .hero__tethers path {
+    transition: none;
+  }
+}
