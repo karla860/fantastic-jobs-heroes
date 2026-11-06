@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fantastic Jobs</title>
+  <meta name="description" content="Power your applications with near real-time job data. From career sites to API in under 2 hours.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,500;9..40,600&family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500&family=JetBrains+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="skyline.css">
+</head>
+<body>
+  <div class="hero" data-hero>
+    <canvas class="hero__canvas" data-scene aria-hidden="true"></canvas>
+    <canvas class="hero__canvas" data-fx aria-hidden="true"></canvas>
+    <svg class="hero__tethers" data-tethers aria-hidden="true"></svg>
+
+    <header class="nav">
+      <div class="nav__bar">
+        <div class="nav__left">
+          <a class="nav__logo" href="https://fantastic.jobs/" aria-label="Fantastic.jobs home">
+            <span class="nav__symbol"><img src="assets/logos/fantastic-logo-dark.png" alt="" width="125" height="22"></span>
+            <img src="assets/logo-wordmark-light.svg" alt="" width="103" height="22">
+          </a>
+          <span class="nav__divider" aria-hidden="true"></span>
+          <nav class="nav__links" aria-label="Main">
+            <a href="https://fantastic.jobs/api">Use Cases <img src="assets/icon-nav-chevron-light.svg" alt="" width="8" height="4"></a>
+            <a href="https://fantastic.jobs/api">Jobs API</a>
+            <a href="https://fantastic.jobs/api#pricing">Pricing</a>
+            <a href="https://developer.fantastic.jobs/documentation/supported-ats-sources">ATS Platforms <img src="assets/icon-nav-chevron-light.svg" alt="" width="8" height="4"></a>
+          </nav>
+        </div>
+        <div class="nav__actions">
+          <a class="button button--secondary nav__login" href="https://fantastic.jobs/api">Log In</a>
+          <a class="button button--primary" href="https://fantastic.jobs/api#pricing">Get API key</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="stage" data-stage>
+      <div class="copy" data-copy>
+        <h1 class="headline"><span>Access millions of</span> <span>AI-enriched jobs in</span> <span>hours, not days</span></h1>
+        <p class="lede">Power your applications with near real-time job data. From career sites to API in under 2 hours.</p>
+
+        <div class="terminal">
+          <div class="terminal__bar">
+            <div class="terminal__tabs" role="tablist" aria-label="Request language">
+              <button type="button" class="terminal__tab" role="tab" id="tab-curl" aria-controls="snippet-curl" aria-selected="true" data-tab="curl">curl</button>
+              <button type="button" class="terminal__tab" role="tab" id="tab-node" aria-controls="snippet-node" aria-selected="false" tabindex="-1" data-tab="node">Node.js</button>
+              <button type="button" class="terminal__tab" role="tab" id="tab-python" aria-controls="snippet-python" aria-selected="false" tabindex="-1" data-tab="python">Python</button>
+            </div>
+          </div>
+<pre class="terminal__code" id="snippet-curl" role="tabpanel" aria-labelledby="tab-curl" tabindex="0" data-snippet="curl"><code><span class="terminal__prompt">$</span> curl "https://data.fantastic.jobs/v1/active-ats?time_frame=1h" \
+    -H "Authorization: Bearer $KEY"</code></pre>
+<pre class="terminal__code" id="snippet-node" role="tabpanel" aria-labelledby="tab-node" tabindex="0" data-snippet="node" hidden><code>await fetch("https://data.fantastic.jobs/v1/active-ats?time_frame=1h", {
+  headers: { Authorization: `Bearer ${KEY}` } }).then((r) =&gt; r.json());</code></pre>
+<pre class="terminal__code" id="snippet-python" role="tabpanel" aria-labelledby="tab-python" tabindex="0" data-snippet="python" hidden><code>requests.get("https://data.fantastic.jobs/v1/active-ats?time_frame=1h",
+  headers={"Authorization": f"Bearer {KEY}"}).json()</code></pre>
+<pre class="terminal__output" aria-label="Example response"><code>[{ "title": "Sr Software Engineer, Cribl AI",
+   <b>"ai_salary_min_value"</b>: 185000,
+   <b>"ai_work_arrangement"</b>: "Remote Solely" }, ...]</code></pre>
+        </div>
+
+        <div class="ctas">
+          <a class="button button--primary" href="https://fantastic.jobs/api#pricing">Get API key</a>
+          <a class="button button--secondary" href="https://developer.fantastic.jobs/documentation/how-fantastic-jobs-api-works" target="_blank" rel="noopener noreferrer">Explore docs</a>
+        </div>
+      </div>
+
+      <ul class="roles" aria-label="Example open roles">
+        <li class="role role--cribl" data-role>
+          <div class="role__head">
+            <img class="role__logo" src="assets/logos/companies/cribl.jpg" alt="" width="32" height="32">
+            <div class="role__text">
+              <p class="role__title">Sr Software Engineer, Cribl AI</p>
+              <p class="role__meta">Cribl · United States</p>
+            </div>
+          </div>
+          <div class="role__values"><b>✦ $185k–$215k</b><b>Remote</b></div>
+        </li>
+        <li class="role role--relativity" data-role>
+          <div class="role__head">
+            <img class="role__logo" src="assets/logos/companies/relativity-space.jpg" alt="" width="32" height="32">
+            <div class="role__text">
+              <p class="role__title">Staff Software Engineer</p>
+              <p class="role__meta">Relativity Space · Long Beach, California</p>
+            </div>
+          </div>
+          <div class="role__values"><b>✦ $181k–$271k</b><b>On-site</b></div>
+        </li>
+        <li class="role role--foji" data-role>
+          <div class="role__head">
+            <img class="role__logo" src="assets/logos/companies/foji.jpg" alt="" width="32" height="32">
+            <div class="role__text">
+              <p class="role__title">Software Engineer</p>
+              <p class="role__meta">Foji · Atlanta, Georgia</p>
+            </div>
+          </div>
+          <div class="role__values"><b>✦ $95k–$125k</b><b>Remote</b></div>
+        </li>
+      </ul>
+    </main>
+
+    <footer class="ground" data-ground>
+      <div class="ground__grid">
+        <ul class="ground__logos" aria-label="Trusted by">
+          <li><img src="assets/logos/grid/teal.png" alt="Teal" width="100" height="24"></li>
+          <li><img src="assets/logos/grid/jack-and-jill.png" alt="Jack &amp; Jill" width="104" height="20"></li>
+          <li><img src="assets/logos/grid/rezi.png" alt="Rezi AI" width="61" height="26"></li>
+        </ul>
+        <dl class="ground__metrics">
+          <div><dt>3M+</dt><dd>Career site jobs / month</dd></div>
+          <div><dt>11M+</dt><dd>Job board jobs / month</dd></div>
+        </dl>
+        <ul class="ground__logos" aria-label="Trusted by, continued">
+          <li><img src="assets/logos/grid/remote-rocketship.png" alt="Remote Rocketship" width="118" height="32"></li>
+          <li><img src="assets/logos/grid/esai.png" alt="ESAI" width="63" height="32"></li>
+          <li class="ground__more">+ more</li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+
+  <script src="skyline.js"></script>
+</body>
+</html>
