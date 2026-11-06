@@ -59,8 +59,7 @@ pre:focus-visible {
   background: linear-gradient(180deg, #030712 0%, #1e1b6b 36%, #4f46e5 72%, #d946ef 86%, #ef0078 100%);
 }
 
-.hero__canvas,
-.hero__tethers {
+.hero__canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -68,22 +67,13 @@ pre:focus-visible {
   pointer-events: none;
 }
 
-.hero__tethers path {
-  fill: none;
-  stroke: #fff;
-  stroke-dasharray: 3 3;
-  stroke-opacity: 0.7;
-  transition: stroke-opacity 150ms ease;
-}
-
-.hero__tethers circle {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 1.5;
-}
-
-.hero__tethers .is-active {
-  stroke-opacity: 1;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Nav */
@@ -330,14 +320,32 @@ pre:focus-visible {
 
 .role {
   position: absolute;
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 11px 14px 12px 12px;
-  border: 1px solid var(--athens);
+  padding: 12px 14px 12px 12px;
   border-radius: 12px;
+  /* Clerk's card: a hairline ring, a soft layered drop, and an inner white glow over a grey fill. */
+  background: #f7f7f8;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.1),
+    0 2px 10px -4px rgba(0, 0, 0, 0.06),
+    0 8px 12px -4px rgba(0, 0, 0, 0.06),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.8),
+    inset 0 0 24px 6px #fff;
+  transition: background-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
+}
+
+/* Clerk's raised state on hover. */
+.role:hover {
   background: #fff;
-  box-shadow: 0 14px 30px -6px rgba(3, 8, 51, 0.4);
+  box-shadow:
+    0 0 0 0.5px rgba(19, 19, 22, 0.15),
+    0 5px 12px -6px rgba(0, 0, 0, 0.12),
+    0 12px 16px -8px rgba(0, 0, 0, 0.12),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.8),
+    inset 0 0 24px 2px #fff;
 }
 
 .role--cribl {
@@ -350,7 +358,9 @@ pre:focus-visible {
   left: calc(100% - 300px);
 }
 
+/* Narrow enough that the first card's line can drop between this card and the next. */
 .role--foji {
+  max-width: 240px;
   top: 306px;
   left: calc(100% - 570px);
 }
@@ -366,16 +376,27 @@ pre:focus-visible {
   display: block;
   border-radius: 8px;
   object-fit: cover;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
 .role__text {
   min-width: 0;
 }
 
+.role__logo {
+  transition: opacity 250ms ease;
+}
+
+.role__logo.is-swapping {
+  opacity: 0;
+}
+
 .role__title,
 .role__meta {
+  overflow: hidden;
   margin: 0;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .role__title {
@@ -392,20 +413,61 @@ pre:focus-visible {
   color: var(--pale-sky);
 }
 
+/* AI-enriched values, marked by the sparkle in front of them. */
 .role__values {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
 }
 
+.role__spark {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-right: 1px;
+  background: linear-gradient(135deg, #9394a1, #5e5f6e);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 0Q6 6 12 6Q6 6 6 12Q6 6 0 6Q6 6 6 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 0Q6 6 12 6Q6 6 6 12Q6 6 0 6Q6 6 6 0Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Clerk's pill: white-to-grey gradient with a ring and a slight lift. */
 .role__values b {
-  padding: 1px 6px;
-  border-radius: 5px;
-  background: var(--zircon);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff, #f7f7f8);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.06);
   font-size: 11px;
   font-weight: 500;
-  line-height: 13px;
+  line-height: 14px;
   white-space: nowrap;
-  color: var(--governor-bay);
+  color: #42434d;
+}
+
+/* Where the job was collected from: platform icon, then the listing page. */
+.role__source {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  margin: 0;
+  padding-top: 9px;
+  border-top: 1px solid #eeeef0;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--pale-sky);
+}
+
+.role__source img {
+  flex: none;
+  display: block;
+  border-radius: 4px;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+}
+
+.role__source span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Ground: the "Logo grid with metrics" bar from Figma. */
@@ -508,9 +570,11 @@ pre:focus-visible {
     margin: 32px auto 0;
   }
 
-  .role {
+  .role,
+  .role--foji {
     position: relative;
     inset: auto;
+    max-width: none;
   }
 
   .role__title,
@@ -569,7 +633,8 @@ pre:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .button,
-  .hero__tethers path {
+  .role,
+  .role__logo {
     transition: none;
   }
 }

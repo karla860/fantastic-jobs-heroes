@@ -14,7 +14,6 @@
   <div class="hero" data-hero>
     <canvas class="hero__canvas" data-scene aria-hidden="true"></canvas>
     <canvas class="hero__canvas" data-fx aria-hidden="true"></canvas>
-    <svg class="hero__tethers" data-tethers aria-hidden="true"></svg>
 
     <header class="nav">
       <div class="nav__bar">
@@ -40,7 +39,7 @@
 
     <main class="stage" data-stage>
       <div class="copy" data-copy>
-        <h1 class="headline"><span>Access millions of</span> <span>AI-enriched jobs in</span> <span>hours, not days</span></h1>
+        <h1 class="headline"><span>275,000+ career sites,</span> <span>one AI-enriched</span> <span>jobs API</span></h1>
         <p class="lede">Power your applications with near real-time job data. From career sites to API in under 2 hours.</p>
 
         <div class="terminal">
@@ -57,9 +56,9 @@
   headers: { Authorization: `Bearer ${KEY}` } }).then((r) =&gt; r.json());</code></pre>
 <pre class="terminal__code" id="snippet-python" role="tabpanel" aria-labelledby="tab-python" tabindex="0" data-snippet="python" hidden><code>requests.get("https://data.fantastic.jobs/v1/active-ats?time_frame=1h",
   headers={"Authorization": f"Bearer {KEY}"}).json()</code></pre>
-<pre class="terminal__output" aria-label="Example response"><code>[{ "title": "Sr Software Engineer, Cribl AI",
-   <b>"ai_salary_min_value"</b>: 185000,
-   <b>"ai_work_arrangement"</b>: "Remote Solely" }, ...]</code></pre>
+<pre class="terminal__output" aria-label="Example response"><code>[{ "title": "<span data-response="title">Sr Software Engineer, Cribl AI</span>",
+   <b>"ai_salary_min_value"</b>: <span data-response="salary">185000</span>,
+   <b>"ai_work_arrangement"</b>: "<span data-response="arrangement">Remote Solely</span>" }, ...]</code></pre>
         </div>
 
         <div class="ctas">
@@ -70,34 +69,40 @@
 
       <ul class="roles" aria-label="Example open roles">
         <li class="role role--cribl" data-role>
-          <div class="role__head">
-            <img class="role__logo" src="assets/logos/companies/cribl.jpg" alt="" width="32" height="32">
+          <p class="visually-hidden" data-summary>Sr Software Engineer, Cribl AI, Cribl, United States. $185k–$215k, Remote. Found on cribl.io/job-detail.</p>
+          <div class="role__head" aria-hidden="true">
+            <img class="role__logo" data-field="logo" src="assets/logos/companies/cribl.jpg" alt="" width="32" height="32">
             <div class="role__text">
-              <p class="role__title">Sr Software Engineer, Cribl AI</p>
-              <p class="role__meta">Cribl · United States</p>
+              <p class="role__title" data-field="title">Sr Software Engineer, Cribl AI</p>
+              <p class="role__meta" data-field="meta">Cribl · United States</p>
             </div>
           </div>
-          <div class="role__values"><b>✦ $185k–$215k</b><b>Remote</b></div>
+          <div class="role__values" aria-hidden="true"><span class="role__spark"></span><b data-field="salary">$185k–$215k</b><b data-field="arrangement">Remote</b></div>
+          <p class="role__source" aria-hidden="true"><img data-field="source-icon" src="assets/sources/greenhouse.png" alt="" width="16" height="16"><span data-field="page">cribl.io/job-detail</span></p>
         </li>
         <li class="role role--relativity" data-role>
-          <div class="role__head">
-            <img class="role__logo" src="assets/logos/companies/relativity-space.jpg" alt="" width="32" height="32">
+          <p class="visually-hidden" data-summary>Staff Software Engineer, Relativity Space, Long Beach, California. $181k–$271k, On-site. Found on relativityspace.com/careers.</p>
+          <div class="role__head" aria-hidden="true">
+            <img class="role__logo" data-field="logo" src="assets/logos/companies/relativity-space.jpg" alt="" width="32" height="32">
             <div class="role__text">
-              <p class="role__title">Staff Software Engineer</p>
-              <p class="role__meta">Relativity Space · Long Beach, California</p>
+              <p class="role__title" data-field="title">Staff Software Engineer</p>
+              <p class="role__meta" data-field="meta">Relativity Space · Long Beach, California</p>
             </div>
           </div>
-          <div class="role__values"><b>✦ $181k–$271k</b><b>On-site</b></div>
+          <div class="role__values" aria-hidden="true"><span class="role__spark"></span><b data-field="salary">$181k–$271k</b><b data-field="arrangement">On-site</b></div>
+          <p class="role__source" aria-hidden="true"><img data-field="source-icon" src="assets/sources/greenhouse.png" alt="" width="16" height="16"><span data-field="page">relativityspace.com/careers</span></p>
         </li>
         <li class="role role--foji" data-role>
-          <div class="role__head">
-            <img class="role__logo" src="assets/logos/companies/foji.jpg" alt="" width="32" height="32">
+          <p class="visually-hidden" data-summary>Software Engineer, Foji, Atlanta, Georgia. $95k–$125k, Remote. Found on linkedin.com/jobs.</p>
+          <div class="role__head" aria-hidden="true">
+            <img class="role__logo" data-field="logo" src="assets/logos/companies/foji.jpg" alt="" width="32" height="32">
             <div class="role__text">
-              <p class="role__title">Software Engineer</p>
-              <p class="role__meta">Foji · Atlanta, Georgia</p>
+              <p class="role__title" data-field="title">Software Engineer</p>
+              <p class="role__meta" data-field="meta">Foji · Atlanta, Georgia</p>
             </div>
           </div>
-          <div class="role__values"><b>✦ $95k–$125k</b><b>Remote</b></div>
+          <div class="role__values" aria-hidden="true"><span class="role__spark"></span><b data-field="salary">$95k–$125k</b><b data-field="arrangement">Remote</b></div>
+          <p class="role__source" aria-hidden="true"><img data-field="source-icon" src="assets/sources/linkedin.png" alt="" width="16" height="16"><span data-field="page">linkedin.com/jobs</span></p>
         </li>
       </ul>
     </main>
@@ -122,6 +127,7 @@
     </footer>
   </div>
 
+  <script src="skyline-jobs.js"></script>
   <script src="skyline.js"></script>
 </body>
 </html>

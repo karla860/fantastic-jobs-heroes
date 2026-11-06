@@ -42,13 +42,27 @@
     [1272, 48, 704, "half"], [1320, 48, 696, "dots", "slant-right"], [1368, 88, 800, "floors"],
   ];
 
-  // Each role's tether ends on the window nearest these points. Stacked layouts use the closer set.
+  // Each card's tether ends on the window nearest one of these points, and moves to the next point
+  // whenever the card changes job. elbowY is where the line turns. Stacked layouts use closer points.
   const TARGETS_WIDE = [
-    { x: 1043, y: 635, elbow: 208 },
-    { x: 1203, y: 699, elbow: 0 },
-    { x: 827, y: 691, elbow: 116 },
+    [{ x: 1043, y: 635, elbowY: 427 }, { x: 1080, y: 700, elbowY: 484 }, { x: 1000, y: 680, elbowY: 484 }, { x: 1064, y: 760, elbowY: 484 }],
+    [{ x: 1203, y: 699 }, { x: 1300, y: 720 }, { x: 1176, y: 750 }, { x: 1250, y: 780 }],
+    [{ x: 827, y: 691, elbowY: 575 }, { x: 900, y: 740 }, { x: 760, y: 700 }, { x: 860, y: 790 }],
   ];
-  const TARGETS_STACKED = [{ x: 1059, y: 635 }, { x: 1123, y: 779 }, { x: 859, y: 767 }];
+  const TARGETS_STACKED = [
+    [{ x: 1059, y: 635 }, { x: 1000, y: 680 }, { x: 1080, y: 700 }],
+    [{ x: 1123, y: 779 }, { x: 1176, y: 750 }, { x: 1150, y: 700 }],
+    [{ x: 859, y: 767 }, { x: 900, y: 740 }, { x: 780, y: 700 }],
+  ];
+  const TETHER_COLOURS = [PINK, INDIGO, PINK];
+
+  // How the cards change job: lines pull back, text scrambles, then lines reach a new window.
+  const HOLD = 5600; // ms each set of jobs stays up
+  const RETRACT = 450;
+  const SCRAMBLE = 900;
+  const LIGHT = 350;
+  const REACH = 650;
+  const STAGGER = 160; // between cards
   const FORCED_WINDOWS = [
     [1043, 635, PINK], [1059, 635, WHITE], [1203, 699, INDIGO], [1219, 699, WHITE],
     [827, 691, PINK], [827, 707, PINK], [1123, 779, INDIGO], [859, 767, PINK],
@@ -60,13 +74,11 @@
   const ground = document.querySelector("[data-ground]");
   const sceneCanvas = document.querySelector("[data-scene]");
   const fxCanvas = document.querySelector("[data-fx]");
-  const tetherSvg = document.querySelector("[data-tethers]");
   const roleCards = [...document.querySelectorAll("[data-role]")];
   const scene = sceneCanvas.getContext("2d");
   const fx = fxCanvas.getContext("2d");
   const wideLayout = window.matchMedia("(min-width: 1120px)");
 
-  const SVG_NS = "http://www.w3.org/2000/svg";
   const glowSprites = new Map();
 
   let width = 0;
@@ -74,7 +86,6 @@
   let ratio = 1;
   let originX = 0;
   let originY = 0;
-  let tethers = [];
   let visibleTwinkles = [];
   let darkCells = [];
   let arrivals = [];
@@ -143,11 +154,10 @@
     });
     const snapTarget = (target) => {
       const cell = nearestCell(target.x, target.y);
-      cell.colour ??= WHITE;
-      return { x: cell.x, y: cell.y, elbowY: target.elbow ? target.y - target.elbow : 0 };
+      return { x: cell.x, y: cell.y, elbowY: target.elbowY ?? 0 };
     };
-    const targetsWide = TARGETS_WIDE.map(snapTarget);
-    const targetsStacked = TARGETS_STACKED.map(snapTarget);
+    const targetsWide = TARGETS_WIDE.map((slot) => slot.map(snapTarget));
+    const targetsStacked = TARGETS_STACKED.map((slot) => slot.map(snapTarget));
 
     const light = (cells, chance) => {
       const lit = [];
@@ -465,39 +475,89 @@
   function cardBox(card) {
     const heroRect = hero.getBoundingClientRect();
     const rect = card.getBoundingClientRect();
-    return { left: rect.left - heroRect.left, right: rect.right - heroRect.left, bottom: rect.bottom - heroRect.top };
+    return { left: rect.left - heroRect.left, right: rect.right - heroRect.left, top: rect.top - heroRect.top, bottom: rect.bottom - heroRect.top };
   }
 
-  function routeTether(box, target, wide) {
+  // In the wide layout the first card's line drops through the gap between the other two cards.
+  function routeTether(index, target, wide) {
+    const box = cardBox(roleCards[index]);
     const endX = toX(target.x);
     const endY = toY(target.y) - RING_RADIUS;
     let startX = (box.left + box.right) / 2;
+    if (wide && index === 0) {
+      const lower = cardBox(roleCards[2]).right + 12;
+      const upper = cardBox(roleCards[1]).left - 12;
+      startX = Math.min(Math.max(startX, lower), upper, box.right - 20);
+    }
     if (!wide || Math.abs(startX - endX) <= PITCH) {
       startX = Math.min(Math.max(endX, box.left + 20), box.right - 20);
     }
-    if (Math.abs(startX - endX) < 1) return [[endX, box.bottom], [endX, endY]];
-    const elbow = wide && target.elbowY ? toY(target.elbowY) : (box.bottom + endY) / 2;
-    return [[startX, box.bottom], [startX, elbow], [endX, elbow], [endX, endY]];
+    const points = Math.abs(startX - endX) < 1
+      ? [[endX, box.bottom], [endX, endY]]
+      : (() => {
+          const elbow = wide && target.elbowY ? toY(target.elbowY) : (box.bottom + endY) / 2;
+          return [[startX, box.bottom], [startX, elbow], [endX, elbow], [endX, endY]];
+        })();
+    return points.map(([x, y]) => [Math.round(x) + 0.5, y]);
+  }
+
+  // Tether state lives here, so a resize mid-change keeps each card on its current window.
+  const slots = roleCards.map((card, index) => ({ card, index, choice: 0, points: [], drawn: 1, lit: 1, hover: false }));
+
+  function targetFor(slot) {
+    const list = (wideLayout.matches ? model.targetsWide : model.targetsStacked)[slot.index];
+    return list[slot.choice % list.length];
   }
 
   function buildTethers() {
     const wide = wideLayout.matches;
-    const targets = wide ? model.targetsWide : model.targetsStacked;
-    tetherSvg.replaceChildren();
-    tethers = roleCards.map((card, index) => {
-      const target = targets[index];
-      const points = routeTether(cardBox(card), target, wide).map(([x, y]) => [Math.round(x) + 0.5, y]);
-      const path = document.createElementNS(SVG_NS, "path");
-      path.setAttribute("d", `M${points.map((point) => point.join(" ")).join("L")}`);
-      const ring = document.createElementNS(SVG_NS, "circle");
-      ring.setAttribute("cx", toX(target.x));
-      ring.setAttribute("cy", toY(target.y));
-      ring.setAttribute("r", RING_RADIUS);
-      tetherSvg.append(path, ring);
-      card.onmouseenter = () => path.classList.add("is-active");
-      card.onmouseleave = () => path.classList.remove("is-active");
-      return { points };
+    slots.forEach((slot) => {
+      slot.points = routeTether(slot.index, targetFor(slot), wide);
     });
+  }
+
+  roleCards.forEach((card, index) => {
+    card.addEventListener("mouseenter", () => { slots[index].hover = true; });
+    card.addEventListener("mouseleave", () => { slots[index].hover = false; });
+  });
+
+  function polylineLength(points) {
+    return points.slice(1).reduce((sum, point, i) => sum + Math.hypot(point[0] - points[i][0], point[1] - points[i][1]), 0);
+  }
+
+  // Draws the first `share` of the line, measured from the card.
+  function drawTether(c, slot) {
+    const points = slot.points;
+    if (points.length < 2 || slot.drawn <= 0) return;
+    let remaining = polylineLength(points) * slot.drawn;
+    c.save();
+    c.setLineDash([3, 3]);
+    c.lineWidth = 1;
+    c.strokeStyle = `rgba(255,255,255,${slot.hover ? 1 : 0.7})`;
+    c.beginPath();
+    c.moveTo(points[0][0], points[0][1]);
+    for (let i = 1; i < points.length && remaining > 0; i += 1) {
+      const [x0, y0] = points[i - 1];
+      const [x1, y1] = points[i];
+      const length = Math.hypot(x1 - x0, y1 - y0);
+      const share = Math.min(1, remaining / length);
+      c.lineTo(x0 + (x1 - x0) * share, y0 + (y1 - y0) * share);
+      remaining -= length;
+    }
+    c.stroke();
+    c.restore();
+
+    const target = targetFor(slot);
+    const ringAlpha = smoothstep(0.85, 1, slot.drawn);
+    if (ringAlpha > 0) {
+      c.globalAlpha = ringAlpha;
+      c.strokeStyle = "#fff";
+      c.lineWidth = 1.5;
+      c.beginPath();
+      c.arc(toX(target.x), toY(target.y), RING_RADIUS, 0, Math.PI * 2);
+      c.stroke();
+      c.globalAlpha = 1;
+    }
   }
 
   function layout() {
@@ -509,7 +569,6 @@
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
     });
-    tetherSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
 
     const stageRect = stage.getBoundingClientRect();
     // Wide layouts keep the city locked to the right edge of the content, like the roles.
@@ -560,7 +619,7 @@
     arrivals = arrivals.filter((win) => now - win.born < 6000);
     arrivals.forEach((win) => {
       const age = (now - win.born) / 1000;
-      drawWindow(c, win, smoothstep(0, 0.25, age) * (1 - smoothstep(4.6, 6, age)));
+      if (!win.ringOnly) drawWindow(c, win, smoothstep(0, 0.25, age) * (1 - smoothstep(4.6, 6, age)));
       if (age < 1.2) {
         const grow = age / 1.2;
         c.strokeStyle = win.colour;
@@ -573,8 +632,20 @@
       }
     });
 
-    // Data travels up each tether from its window to its role.
-    tethers.forEach(({ points }, index) => {
+    runJobCycle(now);
+
+    // Each card's window stays lit while its line is attached.
+    slots.forEach((slot) => {
+      if (slot.lit <= 0) return;
+      const target = targetFor(slot);
+      drawWindow(c, { x: target.x, y: target.y, colour: TETHER_COLOURS[slot.index] }, slot.lit);
+    });
+    slots.forEach((slot) => drawTether(c, slot));
+
+    // Data travels up each fully drawn tether from its window to its card.
+    slots.forEach((slot, index) => {
+      if (slot.drawn < 1) return;
+      const points = slot.points;
       const cycle = (time + index * 1.9) % 5.7;
       if (cycle > 1.9) return;
       const reversed = [...points].reverse();
@@ -596,6 +667,121 @@
       c.arc(x, y, 2, 0, Math.PI * 2);
       c.fill();
     });
+  }
+
+  /* ---------- Job cycle: cards change to the next jobs the request returns ---------- */
+  const JOBS = window.SKYLINE_JOBS || [];
+  const SETS = Math.floor(JOBS.length / roleCards.length);
+  const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const responseFields = [...document.querySelectorAll("[data-response]")];
+  let setIndex = 0;
+  let nextSwitch = performance.now() + HOLD;
+  let switchStart = -Infinity;
+  let scrambles = [];
+
+  const salaryText = (job) => `$${Math.round(job.salaryMin / 1000)}k–$${Math.round(job.salaryMax / 1000)}k`;
+  const arrangementText = (job) => ({ "Remote Solely": "Remote", "Remote OK": "Remote OK", Hybrid: "Hybrid", "On-site": "On-site" })[job.arrangement] ?? job.arrangement;
+
+  function scrambleTo(el, text, now, delay = 0) {
+    el.textContent = text;
+    scrambles.push({ el, text, start: now + delay, seed: Math.random() * 1000 });
+  }
+
+  // Letters and digits cycle at random, then settle left to right. Spaces and punctuation hold still.
+  function stepScrambles(now) {
+    scrambles = scrambles.filter((item) => {
+      const elapsed = now - item.start;
+      if (elapsed >= SCRAMBLE) {
+        item.el.textContent = item.text;
+        return false;
+      }
+      if (elapsed < 0) return true;
+      const length = item.text.length;
+      let out = "";
+      for (let i = 0; i < length; i += 1) {
+        const ch = item.text[i];
+        const settleAt = SCRAMBLE * (0.2 + 0.8 * (i / Math.max(length - 1, 1)));
+        if (elapsed >= settleAt || !/[A-Za-z0-9]/.test(ch)) out += ch;
+        else out += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+      }
+      item.el.textContent = out;
+      return true;
+    });
+  }
+
+  function fillCard(slot, job, now, delay) {
+    const card = slot.card;
+    card.style.width = "";
+    const parts = {
+      title: job.title,
+      meta: `${job.organization} · ${job.location}`,
+      salary: salaryText(job),
+      arrangement: arrangementText(job),
+      page: job.page,
+    };
+    Object.entries(parts).forEach(([key, value]) => {
+      card.querySelector(`[data-field="${key}"]`).textContent = value;
+    });
+    card.querySelector("[data-summary]").textContent = `${job.title}, ${job.organization}, ${job.location}. ${parts.salary}, ${parts.arrangement}. Found on ${job.page}.`;
+    card.querySelector("[data-field='source-icon']").src = `assets/sources/${job.source}.png`;
+    const logo = card.querySelector("[data-field='logo']");
+    logo.classList.add("is-swapping");
+    logo.onload = () => logo.classList.remove("is-swapping");
+    logo.src = `assets/logos/companies/${job.logo}`;
+    // Lock the final width so the card doesn't jitter while the letters scramble.
+    card.style.width = `${card.getBoundingClientRect().width}px`;
+    Object.entries(parts).forEach(([key, value]) => scrambleTo(card.querySelector(`[data-field="${key}"]`), value, now, delay));
+  }
+
+  function fillResponse(job, now) {
+    const values = { title: job.title, salary: String(job.salaryMin), arrangement: job.arrangement };
+    responseFields.forEach((el) => scrambleTo(el, values[el.dataset.response], now, 0));
+  }
+
+  function runJobCycle(now) {
+    if (SETS < 2) return;
+    if (slots.some((slot) => slot.hover) && now > switchStart + RETRACT + SCRAMBLE + REACH + STAGGER * 3) {
+      nextSwitch = Math.max(nextSwitch, now + 1200); // Hold still while someone reads a card.
+    }
+    if (now >= nextSwitch) {
+      switchStart = now;
+      nextSwitch = now + HOLD + RETRACT + SCRAMBLE + REACH;
+      setIndex = (setIndex + 1) % SETS;
+      slots.forEach((slot) => { slot.swapped = false; });
+    }
+    const wide = wideLayout.matches;
+    slots.forEach((slot) => {
+      const t = now - switchStart - slot.index * STAGGER;
+      if (t < 0 || t > RETRACT + SCRAMBLE + REACH + 200) return;
+      if (t < RETRACT) {
+        slot.drawn = 1 - smoothstep(0, RETRACT, t);
+        slot.lit = slot.drawn;
+        return;
+      }
+      if (!slot.swapped) {
+        slot.swapped = true;
+        slot.drawn = 0;
+        slot.lit = 0;
+        slot.choice += 1;
+        const job = JOBS[setIndex * roleCards.length + slot.index];
+        fillCard(slot, job, now, 0);
+        if (slot.index === 0) fillResponse(job, now);
+        slot.points = routeTether(slot.index, targetFor(slot), wide);
+      }
+      const after = t - RETRACT;
+      slot.lit = smoothstep(SCRAMBLE - LIGHT, SCRAMBLE, after);
+      slot.drawn = smoothstep(SCRAMBLE - 150, SCRAMBLE - 150 + REACH, after);
+      if (after >= SCRAMBLE - LIGHT && !slot.announced) {
+        slot.announced = true;
+        const target = targetFor(slot);
+        arrivals.push({ x: target.x, y: target.y, colour: TETHER_COLOURS[slot.index], born: now, ringOnly: true });
+      }
+      if (after > SCRAMBLE + REACH) {
+        slot.card.style.width = "";
+        slot.announced = false;
+      }
+    });
+    stepScrambles(now);
   }
 
   function frame(now) {
